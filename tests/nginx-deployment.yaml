@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx-cont
+          image: nginx:alpine
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "256Mi"
+            requests:
+              cpu: "0.25"
+              memory: "128Mi"
+          ports:
+            - containerPort: 80
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          # You can add an NGINX configuration to display the message
+          command: ["sh", "-c", "echo 'Hello nginx $(POD_NAME)' > /usr/share/nginx/html/index.html && exec nginx -g 'daemon off;'"]

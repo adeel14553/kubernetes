@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-path-fanout
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: nginx.demo.com
+    http:
+      paths:
+      - path: /car
+        pathType: Prefix
+        backend:
+          service:
+            name: car-service
+            port:
+              number: 80
+      - path: /bar
+        pathType: Prefix
+        backend:
+          service:
+            name: bar-service
+            port:
+              number: 80
